@@ -1,0 +1,143 @@
+--- PAGE 1 ---
+
+DISHES PRICE RESTAURENT NAME
+ADDRESS
+North Indian meal 149 THE JANARDHAN CAFE
+https://maps.app.goo.gl/9LHQWXzYmUipGuUT7
+South Indian meal 169
+Curd rice 99
+Masala dosa 89
+Plain dosa 69
+Onion dosa 79
+Paneer masala 179
+Veg fried rice 109
+Paneer fried rice 119
+Veg Noodles 99
+Gobi Manchurian 119
+Chicken biryani 210 AL NAAZ RESTAURENT
+https://maps.app.goo.gl/5iaGYTHUr2TiS82w9
+mutton biryani 259
+Ghee rice 109
+Jeera rice 110
+Biryani rice chicken 99
+Biryani rice mutton 149
+Chicken dum biryani 220 AL-BAIK RESTAURANT
+https://maps.app.goo.gl/V6BTiihbWgRn6chj8
+Murgh Kheema biryani 290
+Ghost Dam biryani 310
+Ghee rice 110
+Jeera rice 120
+Khuska 99
+Curd rice 99
+Chicken kabab 69 Venus Ambur Biryani
+https://maps.app.goo.gl/5NW4NSFnmQxpsiNh7
+kabab lollipop 89
+Chicken pepper dry 110
+Chicken biryani 160
+chicken kushka 110
+Kabab briyani 69
+leg piece biryani 130
+Family bucket biryani 410
+Dindigul briyani 290
+Dindigul kushka 200
+Gobi manchurian 110 The Food Central
+https://maps.app.goo.gl/4bjk9kv5jH1iLiJV7
+Gobi chilli 120
+Veg ball manchurian 130
+Paneer manchurian 140
+Paneer chilli 149
+Paneer pepper dry 149
+Paneer 65 109
+Mushroom Manchurian 129
+Mushroom pepper dry 129
+Crispy Mushrooms 149
+Veg biryani 129 LAKSHMI PRADAYA UDUPI HOTEL
+https://maps.app.goo.gl/ta9B8avj7MgenqKZ8
+
+--- PAGE 2 ---
+
+Veg pulao 119
+Veg Hyderabadi Biryani 149
+Mushroom biryani 129
+Paneer tikka 159
+Mushroom tikka 159
+Gobi tikka 139
+Dal fry 169
+Daal tadka 179
+Daal Palak 189
+Veg kurma 129
+Veg noodles 109
+Paneer noodles 119
+Mushroom noodles 119
+Chicken lollipop 129 Dhanalakshmi Hotel
+https://maps.app.goo.gl/jsV7o34j37eLfgda8
+Chicken kabab 89
+Chicken biryani 169
+Mutton biryani 209
+Kushka 90
+Mutton kabab 119
+Butter chicken 149
+Chicken 65 95
+Chicken biryani 159 New Grand Taj Hotel (Hygienic food)
+https://maps.app.goo.gl/MUw4F73JCoXjvJDi9
+Mutton biryani 180
+Khuska rice 120
+Mutton gravy 130
+Chicken gravy 120
+Chicken Keema 140
+Chicken kabab 130
+Parrota 80
+Egg masala 69
+Omelette 39
+Noodles 89
+Fried rice 120
+Mutton biryani 209 Hotel Saravana Biryani Center
+https://maps.app.goo.gl/diYMUzJhTwfN66MF9
+Chicken kabab 89
+Boiled egg 19
+Chicken gravy 109
+mutton gravy 129
+Salad 69
+Hot and crispy 109 Crispy Chick
+https://maps.app.goo.gl/uq2QuXeh7fjTio7A9
+Crunchy masala 119
+Mini bucket 169
+Bucket chicken 179
+Hot chicken wings 89
+Chicken lollipop 109
+Spicy wings 119
+Chicken burger 79
+Crunchy burger 89
+Smiles 79
+nuggets 79
+French fries 79
+Cheese balls 79
+Pizza 119
+
+--- PAGE 3 ---
+
+Gobi manchurian 109 Veg craft
+https://maps.app.goo.gl/B6rvmjdNvgJN4Z3i7
+Gobi chilli 109
+Gobi pepper dry 119
+Veg roll 99
+paneer roll 89
+mushroom roll 89
+Baby corn manchurian 119
+Mushroom Manchurian 119
+mushroom chilli 129
+mushroom pepper 129
+dry paneer manchurian 139
+paneer chilli 119
+paneer lemon chilli 129
+mushroom lemon chilli 129
+Veg Pizza 119 THE PIZZA PALACE
+https://maps.app.goo.gl/Y7onAgAwcG4yQD7X8
+Margherita 119
+Corn Delight 129
+Mushroom Delight 129
+Veg Crunch 99
+Veg Lovers 109
+Zest Chicken 119
+Chicken Crunch 129
+Chicken Tikka 139
