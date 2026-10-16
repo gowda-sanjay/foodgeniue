@@ -42,7 +42,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     id="nav-logo"
                 >
                     <span className="logo-icon">🍔</span>
-                    <span>FoodGenie<span style={{ fontWeight: 400, color: 'var(--text-muted)' }}>AI</span></span>
+                    <span>AgentAutoBite</span>
                 </a>
 
                 {/* Desktop Menu */}

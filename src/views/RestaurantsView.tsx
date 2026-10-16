@@ -152,7 +152,7 @@ export const RestaurantsView: React.FC<RestaurantsViewProps> = ({
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
                     <div>
                         <span style={{ fontSize: '0.8rem', color: 'var(--primary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                            💡 FoodGenie AI Scout Engine
+                            💡 AgentAutoBite Scout Engine
                         </span>
                         <h1 style={{ fontSize: '1.8rem', margin: '4px 0 8px', letterSpacing: '-0.5px' }}>
                             {searchQuery ? `Searching: "${searchQuery}"` : "All Dishes & Restaurants"}

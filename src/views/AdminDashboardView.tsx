@@ -41,7 +41,7 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '30px', borderBottom: '1px solid var(--border-color)', paddingBottom: '16px' }}>
                 <div>
                     <h1 style={{ fontSize: '2.2rem', margin: 0, fontFamily: 'var(--font-heading)' }}>
-                        💻 FoodGenie Admin Dashboard
+                        💻 AgentAutoBite Admin Dashboard
                     </h1>
                     <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '4px' }}>
                         System Console for Kolar Gold Fields startup fleet management.

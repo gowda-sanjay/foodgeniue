@@ -190,7 +190,7 @@ export const getGeminiChatStream = async (
 
     // Build KGF context to pass to Gemini
     const kgfContext = `
-You are FoodGenie AI, a premium food discovery and ordering assistant for KGF (Kolar Gold Fields), Karnataka.
+You are AgentAutoBite, a premium food discovery and ordering assistant for KGF (Kolar Gold Fields), Karnataka.
 Your database of restaurants and foods is structured as follows. Use ONLY these restaurants and food items. DO NOT make up dummy items or restaurants.
 
 RESTAURANTS IN DATASET:
@@ -206,7 +206,7 @@ Format your responses using clean Markdown. Be engaging, friendly and focus on n
     // Package conversation history
     const geminiHistory = [
       { role: 'user', parts: [{ text: kgfContext }] },
-      { role: 'model', parts: [{ text: "Understood! I will act as FoodGenie AI and only recommend foods and restaurants from the KGF dataset provided above. I am ready to guide users." }] }
+      { role: 'model', parts: [{ text: "Understood! I will act as AgentAutoBite and only recommend foods and restaurants from the KGF dataset provided above. I am ready to guide users." }] }
     ];
 
     messageHistory.forEach(h => {

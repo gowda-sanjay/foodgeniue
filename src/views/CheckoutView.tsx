@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { MapPin, ArrowRight, Ticket } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { MapPin, ArrowRight, Ticket, CheckCircle2 } from 'lucide-react';
 import { type FoodItem } from '../data/restaurants';
+import { api } from '../services/api';
 
 interface CheckoutViewProps {
     food: FoodItem;
@@ -19,6 +20,10 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
     const [promoApplied, setPromoApplied] = useState(false);
     const [promoError, setPromoError] = useState('');
     const [discountVal, setDiscountVal] = useState(0);
+    const [locationState, setLocationState] = useState<'loading' | 'success' | 'error'>('loading');
+    const [locationMessage, setLocationMessage] = useState('AI is looking for your location...');
+    const [deliveryState, setDeliveryState] = useState<'checking' | 'available' | 'unavailable'>('checking');
+    const [deliveryMessage, setDeliveryMessage] = useState('Checking delivery availability...');
 
     // Price calculations
     const basePrice = food.price;
@@ -44,7 +49,50 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
 
     const finalTotal = basePrice + deliveryCharge + packingFee + gstTax - discountVal;
 
+    useEffect(() => {
+        if (!navigator.geolocation) {
+            setLocationState('error');
+            setLocationMessage('Location unavailable on this device.');
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                const { latitude, longitude } = position.coords;
+                setLocationState('success');
+                setLocationMessage('Location found');
+
+                try {
+                    setDeliveryState('checking');
+                    setDeliveryMessage('Checking delivery availability...');
+                    const result = await api.restaurants.nearby(latitude, longitude);
+                    if (Array.isArray(result) && result.length > 0) {
+                        setDeliveryState('available');
+                        setDeliveryMessage('Delivery available');
+                    } else {
+                        setDeliveryState('unavailable');
+                        setDeliveryMessage('Restaurant unavailable for this delivery location.');
+                    }
+                } catch (error) {
+                    setDeliveryState('unavailable');
+                    setDeliveryMessage('Delivery unavailable right now. Please try another location.');
+                }
+            },
+            () => {
+                setLocationState('error');
+                setLocationMessage('Location permission denied. Please allow access to continue.');
+                setDeliveryState('unavailable');
+                setDeliveryMessage('Delivery unavailable right now. Please try another location.');
+            },
+            { enableHighAccuracy: true, timeout: 10000 }
+        );
+    }, []);
+
     const handlePlaceOrder = () => {
+        if (deliveryState !== 'available') {
+            alert(deliveryMessage || 'Delivery unavailable for this restaurant.');
+            return;
+        }
         onProceedToPayment({
             foodId: food.id,
             foodName: food.name,
@@ -62,11 +110,22 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
     return (
         <div className="container animate-fade" style={{ padding: '30px 20px 60px' }}>
             <h1 style={{ fontSize: '2rem', textAlign: 'left', marginBottom: '8px', fontFamily: 'var(--font-heading)' }}>
-                🛒 Checkout Order
+                🧾 Order Review
             </h1>
             <p style={{ color: 'var(--text-muted)', textAlign: 'left', fontSize: '0.9rem', marginBottom: '20px' }}>
-                Review your item details and address to complete the purchase. No pre-cart required.
+                Food Details → AI Location → Delivery Check → Payment → Order Confirmation
             </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 700 }}>
+                    {locationState === 'success' ? <CheckCircle2 size={18} color="#06D6A0" /> : <span>📍</span>}
+                    <span>{locationMessage}</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 700 }}>
+                    {deliveryState === 'available' ? <CheckCircle2 size={18} color="#06D6A0" /> : <span>🚚</span>}
+                    <span>{deliveryMessage}</span>
+                </div>
+            </div>
 
             <div className="checkout-grid">
 

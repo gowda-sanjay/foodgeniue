@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
-import { ArrowLeft, User, Mail, Phone, MapPin, Sparkles, ShieldAlert } from 'lucide-react';
+import { ArrowLeft, User, Mail, Phone, MapPin, Sparkles, ShieldAlert, Lock } from 'lucide-react';
+import { api } from '../services/api';
 
 interface ProfileViewProps {
     setView: (view: string) => void;
 }
 
 export const ProfileView: React.FC<ProfileViewProps> = ({ setView }) => {
+    const [loginEmail, setLoginEmail] = useState('');
+    const [loginPassword, setLoginPassword] = useState('');
+    const [loginError, setLoginError] = useState('');
+    const [isLoggingIn, setIsLoggingIn] = useState(false);
     const [profileName, setProfileName] = useState('Sanjay Gowda');
     const [email, setEmail] = useState('sanjay.gowda@kgfmail.com');
     const [phone, setPhone] = useState('+91 94812 73921');
@@ -20,6 +25,36 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ setView }) => {
         e.preventDefault();
         alert("Profile configurations saved! Search results will align with your fitness constraints.");
     };
+
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoginError('');
+        setIsLoggingIn(true);
+
+        try {
+            const response = await api.auth.login({ email: loginEmail, password: loginPassword });
+            localStorage.setItem('auth_token', response.accessToken);
+            if (response.refreshToken) {
+                localStorage.setItem('refresh_token', response.refreshToken);
+            }
+            setLoginPassword('');
+            alert('Login successful. You can place your order now.');
+        } catch (error) {
+            setLoginError(error instanceof Error ? error.message : 'Login failed. Check your email and password.');
+        } finally {
+            setIsLoggingIn(false);
+        }
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        setLoginEmail('');
+        setLoginPassword('');
+    };
+
+    const isLoggedIn = Boolean(localStorage.getItem('auth_token') || localStorage.getItem('access_token'));
 
     return (
         <div className="container animate-fade" style={{ padding: '30px 20px 60px', maxWidth: '680px' }}>
@@ -42,6 +77,51 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ setView }) => {
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+
+                <div className="glass-panel" style={{ padding: '24px', background: 'var(--bg-card-solid)', border: '1px solid var(--border-color)', textAlign: 'left' }}>
+                    <h3 style={{ fontSize: '1.2rem', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Lock size={18} style={{ color: 'var(--primary)' }} />
+                        <span>{isLoggedIn ? 'You are logged in' : 'Login to place your order'}</span>
+                    </h3>
+                    {isLoggedIn ? (
+                        <button type="button" className="btn-secondary" onClick={handleLogout} style={{ padding: '10px 16px', marginTop: '10px' }}>
+                            Log Out
+                        </button>
+                    ) : (
+                        <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '14px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
+                                <Mail size={16} style={{ position: 'absolute', left: '12px', color: 'var(--text-muted)' }} />
+                                <input
+                                    type="email"
+                                    value={loginEmail}
+                                    onChange={(e) => setLoginEmail(e.target.value)}
+                                    placeholder="Email address"
+                                    required
+                                    autoComplete="email"
+                                    style={{ width: '100%', padding: '11px 12px 11px 36px', borderRadius: 'var(--radius-sm)', backgroundColor: 'var(--bg-app)', border: '1px solid var(--border-color)', color: 'var(--text-main)' }}
+                                    id="login-email-input"
+                                />
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
+                                <Lock size={16} style={{ position: 'absolute', left: '12px', color: 'var(--text-muted)' }} />
+                                <input
+                                    type="password"
+                                    value={loginPassword}
+                                    onChange={(e) => setLoginPassword(e.target.value)}
+                                    placeholder="Password"
+                                    required
+                                    autoComplete="current-password"
+                                    style={{ width: '100%', padding: '11px 12px 11px 36px', borderRadius: 'var(--radius-sm)', backgroundColor: 'var(--bg-app)', border: '1px solid var(--border-color)', color: 'var(--text-main)' }}
+                                    id="login-password-input"
+                                />
+                            </div>
+                            {loginError && <p style={{ color: '#EF476F', fontSize: '0.82rem' }}>{loginError}</p>}
+                            <button type="submit" className="btn-primary" disabled={isLoggingIn} style={{ width: '100%', padding: '12px', borderRadius: 'var(--radius-sm)' }} id="login-submit-btn">
+                                {isLoggingIn ? 'Signing in...' : 'Login'}
+                            </button>
+                        </form>
+                    )}
+                </div>
 
                 {/* Profile Card details */}
                 <form onSubmit={handleSaveProfile} className="glass-panel" style={{ padding: '24px', background: 'var(--bg-card-solid)', border: '1px solid var(--border-color)', textAlign: 'left' }}>

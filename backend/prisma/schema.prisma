@@ -1,0 +1,245 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String            @id @default(uuid())
+  name            String
+  email           String            @unique
+  phone           String?           @unique
+  password        String
+  role            String            @default("USER")
+  profileImage    String?
+  address         String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  orders          Order[]
+  reviews         Review[]
+  favorites       Favorite[]
+  notifications   Notification[]
+  chatHistories   ChatHistory[]
+  searchHistories SearchHistory[]
+  aiRecommendations AIRecommendation[]
+  addresses Address[]
+}
+
+model Restaurant {
+  id             String     @id @default(uuid())
+  restaurantName String
+  description    String
+  address        String
+  latitude       Float?
+  longitude      Float?
+  googleMapsLink String?
+  phone          String?
+  email          String?
+  rating         Float      @default(0)
+  deliveryTime   Int
+  openingTime    String?
+  closingTime    String?
+  coverImage     String?
+  logo           String?
+  status         String     @default("PENDING")
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  foods          Food[]
+  offers         Offer[]
+  reviews        Review[]
+  orders         Order[]
+  coupons        Coupon[]
+  favorites      Favorite[]
+}
+
+model Category {
+  id    String @id @default(uuid())
+  name  String @unique
+  foods Food[]
+}
+
+model Food {
+  id            String         @id @default(uuid())
+  restaurant    Restaurant     @relation(fields: [restaurantId], references: [id])
+  restaurantId  String
+  foodName      String
+  description   String?
+  category      Category?      @relation(fields: [categoryId], references: [id])
+  categoryId    String?
+  price         Float
+  discount      Float          @default(0)
+  image         String?
+  rating        Float          @default(0)
+  reviews       Int            @default(0)
+  veg           Boolean        @default(false)
+  stock         Int            @default(0)
+  deliveryTime  Int
+  nutrition     FoodNutrition?
+  orderItems    OrderItem[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  @@index([foodName])
+}
+
+model FoodNutrition {
+  id           String  @id @default(uuid())
+  food         Food    @relation(fields: [foodId], references: [id])
+  foodId       String  @unique
+  calories     Int?
+  protein      Float?
+  carbohydrates Float?
+  fat          Float?
+  fiber        Float?
+  sugar        Float?
+  sodium       Float?
+  vitaminA     Float?
+  vitaminC     Float?
+  vitaminD     Float?
+  calcium      Float?
+  iron         Float?
+  potassium    Float?
+  magnesium    Float?
+  healthScore  Int?    
+}
+
+model Order {
+  id                 String        @id @default(uuid())
+  user               User          @relation(fields: [userId], references: [id])
+  userId             String
+  restaurant         Restaurant    @relation(fields: [restaurantId], references: [id])
+  restaurantId       String
+  status             String        @default("PENDING")
+  paymentMethod      String
+  paymentStatus      String        @default("PENDING")
+  deliveryAddress    String
+  phoneNumber        String
+  specialInstructions String?
+  deliveryFee        Float         @default(0)
+  gst                Float         @default(0)
+  totalAmount        Float
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  items              OrderItem[]
+  payment            Payment?
+}
+
+model OrderItem {
+  id         String  @id @default(uuid())
+  order      Order   @relation(fields: [orderId], references: [id])
+  orderId    String
+  food       Food    @relation(fields: [foodId], references: [id])
+  foodId     String
+  quantity   Int     @default(1)
+  unitPrice  Float
+  totalPrice Float
+}
+
+model Payment {
+  id            String  @id @default(uuid())
+  order         Order   @relation(fields: [orderId], references: [id])
+  orderId       String  @unique
+  paymentMethod String
+  transactionId String?
+  amount        Float
+  status        String
+  createdAt     DateTime @default(now())
+}
+
+model Address {
+  id         String  @id @default(uuid())
+  user       User    @relation(fields: [userId], references: [id])
+  userId     String
+  label      String?
+  street     String
+  city       String
+  state      String
+  postalCode String
+  latitude   Float?
+  longitude  Float?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Review {
+  id          String      @id @default(uuid())
+  user        User        @relation(fields: [userId], references: [id])
+  userId      String
+  restaurant  Restaurant  @relation(fields: [restaurantId], references: [id])
+  restaurantId String
+  rating      Int
+  comment     String?
+  createdAt   DateTime    @default(now())
+}
+
+model Favorite {
+  id           String     @id @default(uuid())
+  user         User       @relation(fields: [userId], references: [id])
+  userId       String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  restaurantId String
+  createdAt    DateTime   @default(now())
+  @@unique([userId, restaurantId])
+}
+
+model Offer {
+  id           String      @id @default(uuid())
+  restaurant   Restaurant? @relation(fields: [restaurantId], references: [id])
+  restaurantId String?
+  title        String
+  description  String?
+  discount     Float
+  expiresAt    DateTime?
+  createdAt    DateTime    @default(now())
+}
+
+model Coupon {
+  id          String   @id @default(uuid())
+  code        String   @unique
+  description String?
+  discount    Float
+  minAmount   Float?
+  expiresAt   DateTime?
+  restaurant  Restaurant? @relation(fields: [restaurantId], references: [id])
+  restaurantId String?
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  title     String
+  body      String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model ChatHistory {
+  id         String   @id @default(uuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  role       String
+  message    String
+  metadata   String?
+  createdAt  DateTime @default(now())
+}
+
+model SearchHistory {
+  id         String   @id @default(uuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  query      String
+  createdAt  DateTime @default(now())
+  @@index([createdAt])
+}
+
+model AIRecommendation {
+  id         String   @id @default(uuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  category   String
+  payload    String
+  createdAt  DateTime @default(now())
+}

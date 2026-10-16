@@ -26,10 +26,9 @@ interface OrderTrackingViewProps {
 
 export const OrderTrackingView: React.FC<OrderTrackingViewProps> = ({
     order,
-    setView,
-    onUpdateOrderStatus
+    setView
 }) => {
-    const [eta, setEta] = useState(35);
+    const eta = 35;
     const [riderCoord, setRiderCoord] = useState({ x: 20, y: 80 });
 
     // Status index mapping
@@ -37,21 +36,6 @@ export const OrderTrackingView: React.FC<OrderTrackingViewProps> = ({
     const currentStepIndex = statusLevels.indexOf(order.status);
 
     useEffect(() => {
-        // Stage update simulator loop
-        // Every 12 seconds, progress the status to next milestone automatically to simulate real delivery!
-        const statusInterval = setInterval(() => {
-            const nextIndex = statusLevels.indexOf(order.status) + 1;
-            if (nextIndex < statusLevels.length) {
-                const nextStatus = statusLevels[nextIndex];
-                onUpdateOrderStatus(order.id, nextStatus);
-
-                // Update ETA accordingly
-                if (nextStatus === 'preparing') setEta(28);
-                if (nextStatus === 'out') setEta(15);
-                if (nextStatus === 'delivered') setEta(0);
-            }
-        }, 10000); // 10 seconds per step for fast demonstration
-
         // Rider movement coordinate simulator loop
         const riderInterval = setInterval(() => {
             if (order.status === 'out') {
@@ -64,7 +48,6 @@ export const OrderTrackingView: React.FC<OrderTrackingViewProps> = ({
         }, 2000);
 
         return () => {
-            clearInterval(statusInterval);
             clearInterval(riderInterval);
         };
     }, [order.status]);

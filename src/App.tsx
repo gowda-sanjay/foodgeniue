@@ -14,6 +14,7 @@ import { OrdersView } from './views/OrdersView';
 import { ProfileView } from './views/ProfileView';
 import { FavoritesView } from './views/FavoritesView';
 import { AdminDashboardView } from './views/AdminDashboardView';
+import { OrderNowModal } from './components/OrderNowModal';
 
 // Components
 import { Navbar } from './components/Navbar';
@@ -27,6 +28,7 @@ function App() {
   const [selectedRestaurantId, setSelectedRestaurantId] = useState<string | null>(null);
   const [selectedFood, setSelectedFood] = useState<FoodItem | null>(null);
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const [orderFlowFood, setOrderFlowFood] = useState<FoodItem | null>(null);
 
   // checkout temp summary
   const [tempOrderSummary, setTempOrderSummary] = useState<any>(null);
@@ -94,8 +96,29 @@ function App() {
 
   // Direct checkout routing (No Cart system)
   const handleOrderNow = (food: FoodItem) => {
+    const token = localStorage.getItem('auth_token') || localStorage.getItem('access_token');
+    if (!token) {
+      alert('Please login to place your order.');
+      setView('profile');
+      return;
+    }
+
     setSelectedFood(food);
-    setView('checkout');
+    setOrderFlowFood(food);
+  };
+
+  const handleAutomaticOrderCreated = (order: any) => {
+    setOrders(prev => {
+      const updated = [order, ...prev];
+      localStorage.setItem('fg_orders', JSON.stringify(updated));
+      return updated;
+    });
+    setSelectedOrderId(order.id);
+  };
+
+  const handleAutomaticOrderTracking = () => {
+    setOrderFlowFood(null);
+    setView('order-tracking');
   };
 
   const handleProceedToPayment = (summary: any) => {
@@ -242,8 +265,6 @@ function App() {
         return (
           <AiChatView
             onOrderNow={handleOrderNow}
-            setView={setView}
-            setSelectedFood={setSelectedFood}
           />
         );
       case 'admin':
@@ -272,6 +293,14 @@ function App() {
       <main style={{ flex: 1, paddingBottom: '40px' }}>
         {renderActiveView()}
       </main>
+      {orderFlowFood && (
+        <OrderNowModal
+          food={orderFlowFood}
+          onClose={() => setOrderFlowFood(null)}
+          onOrderCreated={handleAutomaticOrderCreated}
+          onTrackOrder={handleAutomaticOrderTracking}
+        />
+      )}
     </div>
   );
 }

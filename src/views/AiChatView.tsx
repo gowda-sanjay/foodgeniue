@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Sparkles, Send, Mic, Image, Settings, Trash2, Key } from 'lucide-react';
-import { getGeminiChatStream, getGeminiApiKey, setGeminiApiKey, removeGeminiApiKey } from '../services/ai';
+import { Sparkles, Send, Mic, Image, Settings, Trash2, Key, ShoppingCart } from 'lucide-react';
+import { getGeminiChatStream, getGeminiApiKey, setGeminiApiKey, removeGeminiApiKey, searchDatasetLocally } from '../services/ai';
 import { type FoodItem } from '../data/restaurants';
 import { VoiceSearchModal } from '../components/VoiceSearchModal';
 import { ImageSearchModal } from '../components/ImageSearchModal';
@@ -10,24 +10,21 @@ interface Message {
     role: 'user' | 'model';
     parts: string;
     timestamp: Date;
+    searchResults?: FoodItem[];
 }
 
 interface AiChatViewProps {
     onOrderNow: (food: FoodItem) => void;
-    setView: (view: string) => void;
-    setSelectedFood: (food: FoodItem | null) => void;
 }
 
 export const AiChatView: React.FC<AiChatViewProps> = ({
-    onOrderNow: _onOrderNow,
-    setView: _setView,
-    setSelectedFood: _setSelectedFood
+    onOrderNow
 }) => {
     const [messages, setMessages] = useState<Message[]>([
         {
             id: 'welcome',
             role: 'model',
-            parts: `Hello! I'm **FoodGenie AI**, your dedicated culinary assistant for **Kolar Gold Fields (KGF)**. 🍔  
+            parts: `Hello! I'm **AgentAutoBite**, your dedicated culinary assistant for **Kolar Gold Fields (KGF)**. 🍔  
 How can I satisfy your cravings today? Here is what I can do:
 - 🔎 Find dishes within a budget (e.g., *“Biryani under ₹200”*)
 - 🥗 Match health goals (*“Low calorie breakfast options”* or *“High protein foods”*)
@@ -95,11 +92,16 @@ Add your **Google Gemini API Key** by clicking the settings gear icon to get liv
         setIsAiTyping(true);
 
         const aiMsgId = `ai_${Date.now()}`;
+        
+        // Search for matching foods
+        const searchedFoods = searchFoodsFromQuery(textToSend);
+        
         const initialAiMsg: Message = {
             id: aiMsgId,
             role: 'model',
             parts: '',
-            timestamp: new Date()
+            timestamp: new Date(),
+            searchResults: searchedFoods
         };
 
         setMessages(prev => [...prev, initialAiMsg]);
@@ -151,6 +153,17 @@ Add your **Google Gemini API Key** by clicking the settings gear icon to get liv
         }
     };
 
+    // Search for food items based on user query
+    const searchFoodsFromQuery = (query: string): FoodItem[] => {
+        const result = searchDatasetLocally(query);
+        return result.foods || [];
+    };
+
+    // All customer Order Now actions share the automatic order modal in App.
+    const handleOrderClick = (food: FoodItem) => {
+        onOrderNow(food);
+    };
+
     const suggestedQuestions = [
         "Find Chicken Biryani under ₹200",
         "Show me healthy breakfast",
@@ -160,7 +173,6 @@ Add your **Google Gemini API Key** by clicking the settings gear icon to get liv
 
     return (
         <div className="chat-page-layout animate-fade" style={{ width: '100%' }}>
-
             {/* Sidebar - Settings and Help */}
             <aside className="chat-sidebar">
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', height: '100%' }}>
@@ -252,7 +264,7 @@ Add your **Google Gemini API Key** by clicking the settings gear icon to get liv
                             🧙‍♂️
                         </div>
                         <div>
-                            <h3 style={{ fontSize: '1.05rem', margin: 0 }}>FoodGenie AI Assistant</h3>
+                            <h3 style={{ fontSize: '1.05rem', margin: 0 }}>AgentAutoBite Assistant</h3>
                             <p style={{ fontSize: '0.75rem', color: 'var(--accent-green)' }}>● Online & Ready</p>
                         </div>
                     </div>
@@ -354,22 +366,136 @@ Add your **Google Gemini API Key** by clicking the settings gear icon to get liv
                     {messages.map((m) => {
                         const isUser = m.role === 'user';
                         return (
-                            <div
-                                key={m.id}
-                                className={`message-bubble ${isUser ? 'user' : 'ai'}`}
-                                style={{
-                                    alignSelf: isUser ? 'flex-end' : 'flex-start',
-                                    textAlign: 'left'
-                                }}
-                            >
-                                {/* Parse Markdown representation simply */}
-                                <div style={{ whiteSpace: 'pre-line', fontSize: '0.92rem' }}>
-                                    {m.parts}
+                            <div key={m.id}>
+                                <div
+                                    className={`message-bubble ${isUser ? 'user' : 'ai'}`}
+                                    style={{
+                                        alignSelf: isUser ? 'flex-end' : 'flex-start',
+                                        textAlign: 'left'
+                                    }}
+                                >
+                                    {/* Parse Markdown representation simply */}
+                                    <div style={{ whiteSpace: 'pre-line', fontSize: '0.92rem' }}>
+                                        {m.parts}
+                                    </div>
+
+                                    <span className="bubble-time">
+                                        {m.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                    </span>
                                 </div>
 
-                                <span className="bubble-time">
-                                    {m.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                </span>
+                                {/* Display food search results if available */}
+                                {m.searchResults && m.searchResults.length > 0 && (
+                                    <div style={{
+                                        display: 'grid',
+                                        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                                        gap: '12px',
+                                        marginTop: '12px',
+                                        marginLeft: isUser ? 'auto' : '0',
+                                        marginRight: isUser ? '0' : 'auto',
+                                        maxWidth: '600px'
+                                    }}>
+                                        {m.searchResults.slice(0, 6).map((food) => (
+                                            <div
+                                                key={food.id}
+                                                style={{
+                                                    background: 'var(--bg-card)',
+                                                    border: '1px solid var(--border-color)',
+                                                    borderRadius: 'var(--radius-md)',
+                                                    overflow: 'hidden',
+                                                    cursor: 'pointer',
+                                                    transition: 'all 0.3s ease',
+                                                    display: 'flex',
+                                                    flexDirection: 'column'
+                                                }}
+                                                onMouseEnter={(e) => {
+                                                    (e.currentTarget as HTMLElement).style.transform = 'translateY(-4px)';
+                                                    (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 16px rgba(0,0,0,0.15)';
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
+                                                    (e.currentTarget as HTMLElement).style.boxShadow = 'none';
+                                                }}
+                                            >
+                                                {/* Food image */}
+                                                <img
+                                                    src={food.image}
+                                                    alt={food.name}
+                                                    style={{
+                                                        width: '100%',
+                                                        height: '120px',
+                                                        objectFit: 'cover'
+                                                    }}
+                                                />
+
+                                                {/* Food info */}
+                                                <div style={{ padding: '12px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                                                    <h4 style={{ margin: '0 0 4px 0', fontSize: '0.9rem', fontWeight: 600 }}>
+                                                        {food.name}
+                                                    </h4>
+                                                    <p style={{ margin: '0 0 8px 0', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                                                        {food.restaurantName}
+                                                    </p>
+
+                                                    {/* Price and rating */}
+                                                    <div style={{
+                                                        display: 'flex',
+                                                        justifyContent: 'space-between',
+                                                        alignItems: 'center',
+                                                        marginBottom: '8px',
+                                                        fontSize: '0.85rem'
+                                                    }}>
+                                                        <span style={{ fontWeight: 700, color: 'var(--primary)' }}>
+                                                            ₹{food.price}
+                                                        </span>
+                                                        <span style={{ color: 'var(--accent-green)' }}>
+                                                            ⭐ {food.rating.toFixed(1)}
+                                                        </span>
+                                                    </div>
+
+                                                    {/* Veg/Non-veg indicator */}
+                                                    <div style={{ fontSize: '0.7rem', marginBottom: '8px' }}>
+                                                        {food.veg ? (
+                                                            <span style={{ color: 'var(--accent-green)' }}>🟢 Vegetarian</span>
+                                                        ) : (
+                                                            <span style={{ color: '#FF6B6B' }}>🔴 Non-Vegetarian</span>
+                                                        )}
+                                                    </div>
+
+                                                    {/* Order button */}
+                                                    <button
+                                                        onClick={() => handleOrderClick(food)}
+                                                        style={{
+                                                            marginTop: 'auto',
+                                                            padding: '8px 12px',
+                                                            background: 'var(--primary)',
+                                                            color: 'white',
+                                                            border: 'none',
+                                                            borderRadius: 'var(--radius-sm)',
+                                                            cursor: 'pointer',
+                                                            fontSize: '0.8rem',
+                                                            fontWeight: 600,
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            justifyContent: 'center',
+                                                            gap: '6px',
+                                                            transition: 'all 0.2s'
+                                                        }}
+                                                        onMouseEnter={(e) => {
+                                                            (e.currentTarget as HTMLElement).style.background = 'var(--primary-dark)';
+                                                        }}
+                                                        onMouseLeave={(e) => {
+                                                            (e.currentTarget as HTMLElement).style.background = 'var(--primary)';
+                                                        }}
+                                                    >
+                                                        <ShoppingCart size={14} />
+                                                        Order Now
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         );
                     })}
@@ -429,7 +555,7 @@ Add your **Google Gemini API Key** by clicking the settings gear icon to get liv
                         <input
                             type="text"
                             className="chat-textbox"
-                            placeholder="Ask FoodGenie... (e.g. 'mutton biryani from Al Naaz')"
+                            placeholder="Ask AgentAutoBite... (e.g. 'mutton biryani from Al Naaz')"
                             value={inputText}
                             onChange={(e) => setInputText(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && submitMessage(inputText)}

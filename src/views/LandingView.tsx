@@ -321,7 +321,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
             {/* How It Works Section */}
             <section className="container" style={{ padding: '60px 20px' }}>
                 <div className="section-header">
-                    <h2 className="section-title">💡 How FoodGenie AI Works</h2>
+                    <h2 className="section-title">💡 How AgentAutoBite Works</h2>
                     <p className="section-subtitle">Discovering dining has never been this advanced.</p>
                 </div>
 
@@ -354,7 +354,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
             <section style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%)', color: 'white', padding: '60px 0', textAlign: 'center' }}>
                 <div className="container" style={{ maxWidth: '600px' }}>
                     <Mail size={36} style={{ margin: '0 auto 16px', display: 'block' }} />
-                    <h2 style={{ color: 'white', fontSize: '2rem', fontFamily: 'var(--font-heading)' }}>Join the FoodGenie AI Club</h2>
+                    <h2 style={{ color: 'white', fontSize: '2rem', fontFamily: 'var(--font-heading)' }}>Join the AgentAutoBite Club</h2>
                     <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '0.95rem', margin: '8px 0 24px', lineHeight: '1.4' }}>
                         Subscribe to receive local deals, fitness menu articles, and new restaurant additions in KGF.
                     </p>
@@ -375,7 +375,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
                             id="newsletter-email-input"
                         />
                         <button
-                            onClick={() => alert("Thank you for subscribing to FoodGenie AI! Updates will serve in your mailbox.")}
+                            onClick={() => alert("Thank you for subscribing to AgentAutoBite! Updates will serve in your mailbox.")}
                             style={{
                                 backgroundColor: 'var(--bg-app)',
                                 color: 'var(--primary)',
@@ -399,7 +399,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
                     <div className="footer-grid">
                         <div style={{ textAlign: 'left' }}>
                             <div className="logo-link" style={{ fontSize: '1.3rem' }}>
-                                <span>🍔</span> <span>FoodGenie AI</span>
+                                <span>🍔</span> <span>AgentAutoBite</span>
                             </div>
                             <p className="footer-text">
                                 KGF's premier food finder powered by Gemini AI. Bringing instant health-tracking delivery services directly to Robertsonpet, Andersonpet, Coromandel, and nearby areas since 2026.
@@ -438,7 +438,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
                     </div>
 
                     <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '20px', textAlign: 'center', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                        © 2026 FoodGenie AI Inc. Karnataka, India. All rights reserved. Made for hungry citizens of KGF.
+                            © 2026 AgentAutoBite Inc. Karnataka, India. All rights reserved. Made for hungry citizens of KGF.
                     </div>
                 </div>
             </footer>
