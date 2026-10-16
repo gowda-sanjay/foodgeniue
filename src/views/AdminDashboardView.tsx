@@ -1,6 +1,5 @@
 import React from 'react';
 import { ArrowLeft, TrendingUp, DollarSign, Package, AlertCircle } from 'lucide-react';
-import { FOODS_DATA } from '../data/restaurants';
 
 interface AdminDashboardViewProps {
     orders: any[];
